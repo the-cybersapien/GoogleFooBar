@@ -1,4 +1,3 @@
-import itertools
 from fractions import gcd
 
 
@@ -9,15 +8,26 @@ def answer(banana_list):
 
         z = (x + y) / gcd(x, y)
         return bool((z - 1) & z)
-
-    b_list = set()
-    combinations = list(itertools.combinations(banana_list, 2))
-    for com in combinations:
-        if check_forever(com[0], com[1]):
-            b_list.add(com[0])
-            b_list.add(com[1])
-
-    return len(banana_list) - len(b_list)
+    # Sort the list first
+    banana_list.sort()
+    # Create a second list to store those values which do not have any match
+    lst = list()
+    # Iterate through the original list, in such a way that once the element is accessed, it is removed.
+    while len(banana_list) > 0:
+    	noMatch = True
+    	# Since we're removing the starting element anyway, always access the first element
+    	x = banana_list[0]
+    	for i in xrange(len(banana_list) - 1, -1, -1):
+    		y = banana_list[i]
+    		if check_forever(x, y):
+    			banana_list.remove(x)
+    			banana_list.remove(y)
+    			noMatch = False
+    			break
+    	if noMatch:
+    		lst.append(x)
+    		banana_list.remove(x)
+    return len(lst)
 
 
 print answer([1, 7, 3, 21, 13, 19])
